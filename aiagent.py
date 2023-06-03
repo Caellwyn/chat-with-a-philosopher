@@ -1,15 +1,11 @@
 import openai
 import streamlit
 
-# openai.api_key = streamlit.secrets['OPENAI_API_KEY']
-with open('../chatgpt_api.txt', 'r') as f:
-    openai.api_key = f.read()
+openai.api_key = streamlit.secrets['OPENAI_API_KEY']
 
 class AIAgent():
     def __init__(self, model="gpt-3.5-turbo"):
-        with open('../chatgpt_api.txt', 'r') as f:
-            openai.api_key = f.read()
-        print(openai.api_key)
+
         self.model=model
         self.system_message = """For each query, consider writings by philosophers that have addressed that question and choose one.
         Respond to the query from the point of view of that philosopher
