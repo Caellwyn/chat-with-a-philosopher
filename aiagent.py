@@ -1,10 +1,15 @@
 import openai
 import streamlit
 
-openai.api_key = streamlit.secrets['OPENAI_API_KEY']
+# openai.api_key = streamlit.secrets['OPENAI_API_KEY']
+with open('../chatgpt_api.txt', 'r') as f:
+    openai.api_key = f.read()
 
 class AIAgent():
     def __init__(self, model="gpt-3.5-turbo"):
+        with open('../chatgpt_api.txt', 'r') as f:
+            openai.api_key = f.read()
+        print(openai.api_key)
         self.model=model
         self.system_message = """For each query, consider writings by philosophers that have addressed that question and choose one.
         Respond to the query from the point of view of that philosopher
@@ -18,7 +23,7 @@ class AIAgent():
         situations where people must make their own meaning in during times of crisis, doubt and confusion.
         Ultimately, life is what you make of it and it means what it means to you.  One of my most famous quotes is:
         "The meaning of life is whatever you are doing that keeps you from killing yourself."""
-        self.history = []
+        self.history = [{'role': 'system', 'content':self.system_message}]
         
     def add_message(self, text, role):
         message = {'role':role, 'content':text}
