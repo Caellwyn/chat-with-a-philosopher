@@ -1,5 +1,5 @@
 import openai
-
+import streamlit
 openai.api_key = streamlit.secrets['OPENAI_API_KEY']
     
 class AIAgent():
