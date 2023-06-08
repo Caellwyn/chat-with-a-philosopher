@@ -1,11 +1,9 @@
 import openai
-import streamlit
 
 openai.api_key = streamlit.secrets['OPENAI_API_KEY']
-
+    
 class AIAgent():
     def __init__(self, model="gpt-3.5-turbo"):
-
         self.model=model
         self.system_message = """For each query, consider writings by philosophers that have addressed that question and choose one.
         Respond to the query from the point of view of that philosopher
@@ -35,6 +33,7 @@ class AIAgent():
             messages=self.history,
             temperature=temperature, # this is the degree of randomness of the model's output
         )
+        self.response = response
         reply = response.choices[0].message["content"]
 
         # Add reply to message history

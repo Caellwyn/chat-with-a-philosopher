@@ -1,22 +1,25 @@
-from copyreg import clear_extension_cache
 import streamlit as st
 from aiagent import AIAgent
 
 @st.cache_resource
 def get_agent():
-    agent = AIAgent(model='gpt-3.5-turbo-0301')
+    agent = AIAgent(model='gpt-3.5-turbo')
     global cost
     cost = 0
     print('creating the ai agent')
+    st.session_state['prefix'] = ''
     return agent, cost
 
 def format_history(history):
-    report = []
+    report = ''
+    len_prefix = len(st.session_state['prefix'])
+    print('prefix length', len_prefix)
+    print(f'history length {len(history)}')
     for message in history[1:]:
         if message['role'] == 'user':
-            report.append(f"YOU: {message['content']}")
+            report += (f"\n\nYOU: {message['content'].replace(st.session_state['prefix'], '')}")
         else:
-            report.append(f"PHILOSOPHER: {message['content']}")
+            report += (f"\n\nPHILOSOPHER: {message['content']}")
     return report
         
 def clear_history():
@@ -24,15 +27,17 @@ def clear_history():
     new_philosopher()
 
 def new_philosopher():
-    del st.session_state['prefix']
+    st.session_state['prefix'] = ''
 
 def query_agent():
     if prompt:
-        try:
+        try:      
             current_response.write("The forum is considering your query and will send a representative soon.")
-            reply = agent.query(prompt)
+            reply = agent.query(st.session_state['prefix'] + prompt, 
+                                temperature=st.session_state['temperature']
+                                )
             st.session_state['response'] = reply['content']
-            st.session_state['prefix'] = "Please continue to respond as the previous philosopher"
+            st.session_state['prefix'] = "Please continue to respond as the previous philosopher: "
         except Exception as e:
             st.session_state['response'] = "I'm sorry, all philosophers are busy helping other wisdom seekers.  Please try again later."
             print(e)
@@ -43,6 +48,7 @@ agent, cost = get_agent()
 
 st.title('Chat with a Philosopher!')
 
+st.session_state['temperature'] = st.sidebar.slider('Creativity', min_value=0.0, max_value=1.0, step=0.1, value=0.1)
 st.sidebar.button('New conversation', on_click=clear_history,
                    use_container_width=False)
 
@@ -55,8 +61,7 @@ prompt = st.text_input(label="Please ask your question and the next available ph
                        key='user_query',
                        placeholder="Enter your burning question here")
 
-if 'prefix' in st.session_state:
-    prompt = st.session_state.prefix + prompt
+prompt = st.session_state.prefix + prompt
 
 st.button('Submit your question to the Forum of Wisdom',
           on_click=query_agent)
