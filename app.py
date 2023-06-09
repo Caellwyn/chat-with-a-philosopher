@@ -46,6 +46,9 @@ def query_agent():
 
 agent, cost = get_agent()
 
+if 'prefix' not in st.session_state:
+    st.session_state['prefix'] = ''
+    
 st.title('Chat with a Philosopher!')
 
 st.session_state['temperature'] = st.sidebar.slider('Creativity', min_value=0.0, max_value=1.0, step=0.1, value=0.1)
