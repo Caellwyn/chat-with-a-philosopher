@@ -57,5 +57,12 @@ class AIAgent():
     def clear_history(self):
         self.history = [{'role':'system', 'content':self.system_message}]
         
-    def get_history(self):
-        return self.history
+    @property
+    def history(self):
+        return st.session_state['history']
+    
+    @history.setter
+    def history(self, message):
+        if 'history' in st.session_state:
+            st.session_state['history'].append(message)
+        else: st.session_state['history'] = message
