@@ -5,6 +5,7 @@ openai.api_key = streamlit.secrets['OPENAI_API_KEY']
     
 class AIAgent():
     def __init__(self, model="gpt-3.5-turbo"):
+        """Initialize the AI Agent.  Set the system message, initial prompt prefix, and initial response"""
         self.model=model
         self.system_message = """For each query, consider writings by philosophers that have addressed that question and choose one.
         Respond to the query from the point of view of that philosopher
@@ -23,6 +24,7 @@ class AIAgent():
         self.response = 'Philosophers are waiting patiently, possibly smoking a cigar or pipe'
         
     def add_message(self, text, role):
+        """Add a message to the conversation history"""
         message = {'role':role, 'content':text}
         self.history.append(message)
         
@@ -43,12 +45,9 @@ class AIAgent():
         
         # set prompt prefix to ensure same philosopher answers each time.
         self.prefix = 'Please continue to respond as the previous philosopher: '
-       
-        # return self.response
-    
+           
     def clear_history(self):
+        """Reset the history to its initial state.  Also reset the prefix and current response"""
         self.history = [{'role':'system', 'content':self.system_message}]
         self.prefix = ''
-        
-    def get_history():
-        return self.history
+        self.response = 'Philosophers are waiting patiently, possibly smoking a cigar or pipe'
