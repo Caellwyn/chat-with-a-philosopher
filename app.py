@@ -2,7 +2,6 @@ import streamlit as st
 from aiagent import AIAgent
 
 from streamlit.web.server.websocket_headers import _get_websocket_headers
-import streamlit as st
 
 # Get session id
 headers = _get_websocket_headers()
