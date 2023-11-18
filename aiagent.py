@@ -1,7 +1,11 @@
 import openai
 import streamlit
+import os
 
-openai.api_key = streamlit.secrets['OPENAI_API_KEY']
+try:
+    openai.api_key = streamlit.secrets['OPENAI_API_KEY']
+except:
+    openai.api_key = os.getenv('OPENAI_API_KEY')
     
 class AIAgent():
     def __init__(self, model="gpt-4-1106-preview"):
